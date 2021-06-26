@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxnb.mapper.AccountMapper">
+
+    <sql id="selectColumns">
+        pk,pub,status,modtime,createtime
+    </sql>
+
+    <sql id="insertColumns">
+        pk,pub,status,createtime
+    </sql>
+
+
+    <!--查询列表 0代表全部-->
+    <select id="list" resultType="Account">
+        SELECT
+        <include refid="selectColumns"/>
+        from account
+        <where>
+            <if test='status != 0'>
+                status= #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="load" resultType="Account">
+        SELECT
+        <include refid="selectColumns"/>
+        from account
+        <where>
+            <if test='pub != null and pub != ""'>
+                pub=#{pub}
+            </if>
+            <if test='status != 0'>
+              and status= #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="Account">
+        INSERT INTO account
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        (#{pk},#{pub},#{status},#{createtime})
+    </insert>
+
+    <delete id="delete">
+        delete from account where pk = #{pk}
+    </delete>
+
+    <update id="update" parameterType="Account">
+        update account set
+        <if test='pub != null and pub != ""'>pub=#{pub},</if>
+        <if test='status != null'>status=#{status},</if>
+        <if test='createtime != null'>createtime=#{createtime}</if>
+        WHERE pk =#{pk}
+    </update>
+
+</mapper>

@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+
+<body>
+<form method="post" th:action="@{/trans/register}" th:object="${transPushDTO}">
+    <!--th:object="${order}"-->
+    <input type="submit" value="发送注册" />
+    <table>
+        <tbody>
+        <tr>
+            <td>通道名称：</td>
+            <td><input type="text" th:field="*{channelName}" /></td>
+        </tr>
+        <tr>
+            <td>链码名称：</td>
+            <td><input type="text" th:field="*{chaincodeNmae}" /></td>
+        </tr>
+        <tr>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+<form method="post" th:action="@{/trans/unregister}" th:object="${transPushDTO}">
+    <!--th:object="${order}"-->
+    <input type="submit" value="取消注册" />
+    <table>
+        <tbody>
+        <tr>
+            <td>通道名称：</td>
+            <td><input type="text" th:field="*{channelName}" /></td>
+        </tr>
+        <tr>
+            <td>链码名称：</td>
+            <td><input type="text" th:field="*{chaincodeNmae}" /></td>
+        </tr>
+        <tr>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxnb.mapper.ChainMapper">
+
+
+    <sql id="selectColumns">
+        id,url,apikey,status,rate,tokenname,modtime,createtime
+    </sql>
+
+    <sql id="insertColumns">
+        id,url,apikey,status,rate,tokenname,createtime
+    </sql>
+
+
+    <!--查询列表-->
+    <select id="list" resultType="Chain">
+        SELECT
+        <include refid="selectColumns"/>
+        from chain
+        <where>
+            <if test='status != 0'>
+                status= #{status}
+            </if>
+            <if test='id != null'>
+               and id= #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="load" resultType="Chain">
+        SELECT
+        <include refid="selectColumns"/>
+        from chain
+        <where>
+            <if test='status != 0'>
+                status= #{status}
+            </if>
+            <if test='id != null'>
+                and id= #{id}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="Chain">
+        INSERT INTO chain
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        (#{id},#{url},#{apikey},#{status},#{rate},#{tokenname},#{createtime})
+    </insert>
+
+    <delete id="delete">
+        delete from chain where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="Chain">
+        update chain set
+        <if test='url != null and url != ""'>url=#{url},</if>
+        <if test='apikey != null and apikey != ""'>apikey=#{apikey},</if>
+        <if test='status != null'>status=#{status},</if>
+        <if test='rate != null and rate != ""'>rate=#{rate},</if>
+        <if test='tokenname != null and tokenname != ""'>tokenname=#{tokenname},</if>
+        <if test='createtime != null'>createtime=#{createtime}</if>
+        WHERE id =#{id}
+    </update>
+
+
+
+</mapper>

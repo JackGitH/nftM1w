@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinaso.mcpac.mapper.EnterpriseMapper">
+
+    <sql id="selectColumns">
+        id,from,to,amount,contractaddress,hash,datetime,status,chainid,contractname,modtime,createtime
+    </sql>
+
+    <sql id="insertColumns">
+        from,to,amount,contractaddress,hash,datetime,status,chainid,contractname,createtime
+    </sql>
+
+
+    <!--查询列表 0代表全部-->
+    <select id="list" resultType="DropOne">
+        SELECT
+        <include refid="selectColumns"/>
+        from drop
+        <where>
+            <if test='status != 0'>
+                status= #{status}
+            </if>
+            <if test='chainid != null'>
+               and chainid= #{chainid}
+            </if>
+            <if test='from != null and from != ""'>
+               and from= #{from}
+            </if>
+            <if test='contractaddress != null and contractaddress != ""'>
+                and contractaddress=#{contractaddress}
+            </if>
+        </where>
+        order by createtime asc
+    </select>
+
+    <select id="load" resultType="DropOne">
+        SELECT
+        <include refid="selectColumns"/>
+        from drop where id=#{pk}
+        <where>
+            <if test='status != 0'>
+               and status= #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="DropOne">
+        INSERT INTO drop
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        (#{from},#{to},#{amount},#{contractaddress},#{hash},#{datetime},#{status},#{chainid},#{contractname},#{createtime})
+    </insert>
+
+    <delete id="delete">
+        delete from drop where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="DropOne">
+        update drop set
+        <if test='from != null and from != ""'>from=#{from},</if>
+        <if test='to != null and to != ""'>to=#{to},</if>
+        <if test='amount != null and amount != ""'>amount=#{amount},</if>
+        <if test='contractaddress != null and contractaddress != ""'>contractaddress=#{contractaddress},</if>
+        <if test='hash != null and hash != ""'>hash=#{hash},</if>
+        <if test='datetime != null'>datetime=#{datetime},</if>
+        <if test='status != null'>status=#{status},</if>
+        <if test='chainid != null and chainid != ""'>chainid=#{chainid},</if>
+        <if test='contractname != null and contractname != ""'>to=#{contractname},</if>
+        <if test='createtime != null'>createtime=#{createtime}</if>
+        WHERE id =#{id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <style>
+        .section bg-gray section-padding aos-init aos-animate {
+            margin-top: -277px;
+        }
+
+        .section-padding {
+            padding-top: 40px;
+            padding-bottom: 120px;
+        }
+
+        .modal-bg {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            opacity: 0.5;
+            z-index: 1000;
+        }
+
+        .modal-img {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            width: 20%;
+            height: 20%;
+            z-index: 1001;
+            text-align: center;
+        }
+
+    </style>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ConstPress - Construction Bootstrap5 Template</title>
+
+    <!-- Favicons -->
+    <link rel="stylesheet" th:href="@{/assets/images/favicon.png}">
+
+
+    <!-- Vendor CSS (Icon Font) -->
+
+    <link rel="stylesheet" th:href="@{/assets/css/vendor/fontawesome.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/vendor/pe-icon-7-stroke.min.css}">
+
+    <!-- Plugins CSS (All Plugins Files) -->
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/jquery-ui.min.css}">
+
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/splitting.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/animate.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/nice-select.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/swiper-bundle.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins/aos.min.css}">
+    <!-- <link rel="stylesheet" th:href="@{/assets/css/plugins/odometer-theme-default.min.css}">-->
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+
+
+</head>
+
+<body>
+
+
+<!-- Project Section Start -->
+
+
+
+<div class="section section-padding">
+
+    <div id="modal-bg" class="modal-bg"></div>
+    <div id="modal-img" class="modal-img">
+        <img th:src="@{/assets/images/project/loading.gif}">
+    </div>
+
+    <div class="section bg-gray section-padding text-center" class="error-area " data-aos="fade-up"
+         data-aos-delay="100">
+        <div class="container">
+            <div class="row">
+
+                <div class="about-content-area title-box" data-aos="fade-up" data-aos-delay="300">
+                    <h2 class="title">mob：后台管理平台-最新版本发布(仅限技术研究,技术交流请联系)</h2>
+                    <img th:src="@{/assets/images/project/mob.jpg}"  alt="Logo Image">
+                </div>
+                <div class="col-lg-6">
+                    <div class="contact-form">
+
+                        <div class="row">
+                            <div class="col-12 mb-6" data-aos="fade-up" data-aos-delay="400">
+
+                                <input class="input-item" id="paycode" type="text" placeholder="请输入eth钱包地址/heco钱包地址"
+                                       name="paycode"/>
+
+                            </div>
+                            <div class="col-12" data-aos="fade-up" data-aos-delay="600">
+                                <button class="btn btn-primary btn-hover-dark" onclick="airdrop()">领取空投1000枚！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="beginairdrop()">开启随机空投！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="window.open('https://ht.mdex.com/?#/swap') ">SWAP/Buy 兑换?</button>
+                                <p> </p>
+                                <button class="btn btn-primary btn-hover-dark" onclick="window.open('https://ht.mdex.com/?#/add/0xa71EdC38d189767582C38A3145b5873052c3e47a/0x66dD43C03fa91aBeCb8F4EE2F7F34de9ed88eB26') ">创建流动性?</button>
+                            </div>
+                            <p></p>
+                            <div class="col-12" data-aos="fade-up" data-aos-delay="600">
+                                <button class="btn btn-primary btn-hover-dark" onclick="lock()">锁仓！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="reverse()">解锁！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="containss()">查询是否锁仓！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="reloadtime()">重置锁仓时间！</button>
+                            </div>
+                            <p></p>
+                            <div class="col-12" data-aos="fade-up" data-aos-delay="600">
+                                <button class="btn btn-primary btn-hover-dark" onclick="beginshare()">开启定时分红！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="endshare()">关闭定时分红！</button>
+                                <button class="btn btn-primary btn-hover-dark" onclick="findshare()">查询是否已经开启分红！
+                                </button>
+                            </div>
+
+
+                            <div class="col-12 mb-6" data-aos="fade-up" data-aos-delay="400">
+
+                                <h5 class="title">锁仓和解锁，均需要五秒左右时间，如需查询请五秒后查询。</h5>
+                                <h5 class="title">开启分红后，每周五凌晨1点按照持币比例,每个地址分红持币数量的0.06%。</h5>
+                                <h5 class="title">重置锁仓：先将地址解锁,再将地址重新锁仓即可完成重置锁仓，重置锁仓后，当前地址内的所有余额均会被锁仓。</h5>
+                            </div>
+
+                        </div>
+
+
+                        <p class="form-messege"></p>
+                    </div>
+
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-5 offset-lg-1">
+                    <div class="contact-panel__info bg-overlay bg-overlay-primary bg-img">
+
+                        <div class="contact-block">
+                            <h5 class="contact-block__title">mob介绍</h5>
+                            <h5 class="contact-block__title">虽然是个demo，于2021-06-16发布，但持币地址已经突破600+,还在持续增长中</h5>
+                            <ul class="contact-block__list list-unstyled">
+                                <li>mob：基于heco发布。也支持bsc发布。有以下特点：</li>
+                                <li> 1 总量1亿,流动性暂未创建，持币地址达到1500+,才会开启流动性</li>
+                                <li> 2 通缩，每进行一笔转移，转移量的5%会被销毁</li>
+                                <li> 3 分红，每一笔转移，转移量的5%会进行分红</li>
+                                <li> 4 支持锁仓和按照时间梯度释放，锁仓后，从2021-10-13开始，每个月释放20%可以转移，以免交易池swap击穿</li>
+                                <li> 5 支持解锁，更加灵活</li>
+                                <li> 6 支持定时分红和关闭定时分红，按照持有比例，定时开启比例分红和空投</li>
+                                <li> 7 支持可视化界面操作的token管理，独一无二的管理模式，全网唯一</li>
+                                <li> 8 合约可开源，可定制</li>
+                                <li> 9 支持钱包图标，可以从tp钱包直接搜索“mob”,查找导入</li>
+                                <li> 10 支持随机空投，开启随机空投后，1小时内完成1000+个地址的随机空投</li>
+                                <li> 11 以上功能全网唯一，并且可视化操作界面独一无二，如有雷同，纯属抄袭</li>
+                            </ul>
+                        </div><!-- /.contact-panel__info__block -->
+                        <div class="contact-block">
+                            <h5 class="contact-block__title">合约地址</h5>
+                            <ul class="contact-block__list list-unstyled">
+                                <li>https://hecoinfo.com/token/</li>
+                                <li>0x66dD43C03fa91aBeCb8F4EE2F7F34de9ed88eB26</li>
+                            </ul>
+                        </div><!-- /.contact-panel__info__block -->
+                        <div class="contact-block">
+                            <h5 class="contact-block__title">使用方式</h5>
+                            <ul class="contact-block__list list-unstyled">
+                                <li>下载tokenpocket。切换火币生态链</li>
+                                <li>搜索合约地址或者token:0x66dD43C03fa91aBeCb8F4EE2F7F34de9ed88eB26</li>
+                                <li>token  mob添加成功</li>
+                            </ul>
+                        </div>
+                        <div class="contact-block">
+                            <h5 class="contact-block__title">钱包中现已有图标mob,也可以试一下前段时间的cxnb，</h5>
+                            <li>0x66dD43C03fa91aBeCb8F4EE2F7F34de9ed88eB26</li>
+                            <img th:src="@{/assets/images/project/tpmob.jpg}">
+                            <li>0x4214c540152161ca47fD3341a731BDa337951D21</li>
+                            <img th:src="@{/assets/images/project/cxnb.jpg}">
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Project Masonry Section End -->
+
+
+<script th:src="@{/assets/js/vendor/jquery-3.5.1.min.js}"></script>
+
+
+<!-- Plugins JS -->
+<script th:src="@{/assets/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/assets/js/vendor/jquery-migrate-3.3.0.min.js}"></script>
+<script th:src="@{/assets/js/vendor/modernizr-3.11.2.min.js}"></script>
+<script th:src="@{/assets/js/plugins/splitting.min.js}"></script>
+<script th:src="@{/assets/js/plugins/swiper-bundle.min.js}"></script>
+<script th:src="@{/assets/js/plugins/aos.min.js}"></script>
+<script th:src="@{/assets/js/plugins/nice-select.min.js}"></script>
+<script th:src="@{/assets/js/plugins/jquery.ajaxchimp.min.js}"></script>
+<script th:src="@{/assets/js/plugins/jquery-ui.min.js}"></script>
+<script th:src="@{/assets/js/plugins/masonry.min.js}"></script>
+<script th:src="@{/assets/js/plugins/odometer.min.js}"></script>
+<script type="module" th:src="@{/assets/js/spin.js}"></script>
+
+
+<!--Main JS-->
+<script th:src="@{/assets/js/main.js}"></script>
+<script th:src="@{/assets/js/plugins/sweetalert.min.js}"></script>
+<script>
+
+
+    function lock() {
+
+        var paycode = $("#paycode").val();
+        if (paycode == '') {
+            swal("addres is empty||地址不能为空！");
+            return
+        }
+        if (paycode.length > 43) {
+            swal("Invalid address||无效地址！");
+            return
+        }
+        swal({
+            title: "您无锁仓权限，提示信息请忽略",
+            text: "锁仓成功，锁仓后，该地址从2021-10-13开始，每个月释放20%，连续释放5个月结束",
+            icon: "success",
+            button: "确定!",
+        });
+       /* loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/lock/" + paycode + "/1",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "锁仓成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });*/
+    }
+
+
+    function reverse() {
+
+        var paycode = $("#paycode").val();
+        if (paycode == '') {
+            swal("addres is empty||地址不能为空！");
+            return
+        }
+        if (paycode.length > 43) {
+            swal("Invalid address||无效地址！");
+            return
+        }
+
+        swal({
+            title: "解锁成功",
+            text: "该地址解锁成功",
+            icon: "success",
+            button: "确定!",
+        });
+        /*$.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/lock/" + paycode + "/2",
+            success: function (result) {
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "解锁成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });*/
+    }
+
+
+    function loadings(){
+        $('#modal-bg').toggle();
+        $('#modal-img').toggle();
+    }
+    /**查询是否锁仓   **/
+    function containss() {
+
+        var paycode = $("#paycode").val();
+        if (paycode == '') {
+            swal("addres is empty||地址不能为空！");
+            return
+        }
+        if (paycode.length > 43) {
+            swal("Invalid address||无效地址！");
+            return
+        }
+        swal({
+            title: "查询成功，您无查询权限，提示信息请忽略",
+            text: "该地址未被锁定",
+            icon: "success",
+            button: "确定!",
+        });
+
+        /*
+        loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/lock/" + paycode + "/3",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+
+                    swal({
+                        title: "查询成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });*/
+    }
+
+
+    /**开启空投**/
+    function beginairdrop() {
+
+        swal("请联系管理员开启随机空投权限，您无权限");
+
+       /* loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/drop/1",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "开启成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });*/
+    }
+
+    /**开启分红**/
+    function beginshare() {
+        loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/share/1",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "开启成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });
+    }
+
+
+    /**关闭分红**/
+    function endshare() {
+        loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/share/2",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "关闭成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });
+    }
+
+    /**分红查询**/
+    function findshare() {
+        loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/findshare",
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "查询成功",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });
+    }
+
+    /**分红查询**/
+    function reloadtime() {
+        swal("缺少权限！请联系管理员操作");
+    }
+
+
+    /**领取空投**/
+    function airdrop() {
+        var paycode = $("#paycode").val();
+        if (paycode == '') {
+            swal("addres is empty||地址不能为空！");
+            return
+        }
+        if (paycode.length > 43) {
+            swal("Invalid address||无效地址！");
+            return
+        }
+        loadings();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/order/airdrop/" + paycode,
+            success: function (result) {
+                loadings();
+                if (result.meta.code == 0) {
+                    swal({
+                        title: "领取结果",
+                        text: result.data,
+                        icon: "success",
+                        button: "确定!",
+                    });
+                } else {
+                    swal(result.data);
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+
+</html>
