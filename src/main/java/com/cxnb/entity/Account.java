@@ -3,9 +3,8 @@ package com.cxnb.entity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.web3j.abi.datatypes.Int;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 @ApiModel(value = "Account", description = "账户信息")
@@ -54,6 +53,7 @@ public class Account {
 
     private Integer pageNum;
     private Integer pageSize;
+    private List<String> toaddressList;
 
 
 

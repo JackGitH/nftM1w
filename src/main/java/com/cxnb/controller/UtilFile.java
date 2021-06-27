@@ -3,10 +3,12 @@ package com.cxnb.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -138,7 +140,7 @@ public class UtilFile {
         return 0;
     }
 
-  
+
 
     /**
      * 根据“文件名的后缀”获取文件内容类型（而非根据File.getContentType()读取的文件类型）
@@ -717,37 +719,37 @@ public class UtilFile {
         }
         return swapStream.toByteArray();
     }
-    
+
     /**
-	 * 
+	 *
 	 * @param path 需要遍历的路径
 	 * @return 路径下文件的名称集合
 	 */
-	public static boolean getFile(String newFile, String path,int deep){ 
+	public static boolean getFile(String newFile, String path,int deep){
 		boolean flag = true;
 		try {
 			logger.info("--getFile--"+path);
-	        // 获得指定文件对象  
-	        File file = new File(path);   
-	        // 获得该文件夹内的所有文件   
+	        // 获得指定文件对象
+	        File file = new File(path);
+	        // 获得该文件夹内的所有文件
 	        String[] array = file.list();//.listFiles();
 	        logger.info("--file.list()--" + array.length);
 	        ArrayList<String> list = new ArrayList<String>();
 	        int n = 0;
 	        for(int i=0;i<array.length;i++)
-	        {   
+	        {
 	        	if (array[i].equals(newFile)) {
 					flag = false;
 				}
 	        	//list.add(array[i]);
 	            /*if(array[i].isFile())//如果是文件
-	            {   
+	            {
 	                    for (int j = 0; j < deep; j++)//输出前置空格
 	                    System.out.print(" ");
-	                // 只输出文件名字  
-	                    list.add(array[i].getName()); 
+	                // 只输出文件名字
+	                    list.add(array[i].getName());
 	            }*/
-	        }  
+	        }
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.info(e.toString());
@@ -784,10 +786,10 @@ public class UtilFile {
             return null;
         }
     }
-	
-	
+
+
 	public static void handleFile(File file) throws IOException {
-		if (!file.getParentFile().exists()) 
+		if (!file.getParentFile().exists())
 	       { // 如果父目录不存在，创建父目录
 	         file.getParentFile().mkdirs();
 	       }
@@ -798,10 +800,10 @@ public class UtilFile {
 
 
 	}
-	
+
 	/**
-	 * 根据fdfs-url，返回groupname 和path 
-	 * @throws MalformedURLException 
+	 * 根据fdfs-url，返回groupname 和path
+	 * @throws MalformedURLException
 	 * **/
 	public static String[] getFdsDelParams(String url) throws MalformedURLException {
 		String[] delParams = new String[2];
@@ -811,5 +813,67 @@ public class UtilFile {
 		delParams[1] = file.replace(delParams[0], "").substring(2);
 		return delParams;
 	}
-	
+
+
+
+    // 以文件流的形式返回
+    public static void fileDownload(HttpServletResponse response, String filePath, String fileName) {
+        File file = new File(filePath);
+        // 0.清空 response
+        response.reset();
+//        response.setContentType("application/octet-stream");
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Length", "" + file.length());
+        try {
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        OutputStream stream = null;
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        try {
+
+            // 1. 读取文件
+            fis = new FileInputStream(file);
+            bis = new BufferedInputStream(fis);
+            byte[] buffer = new byte[bis.available()];
+            fis.read(buffer);
+//            int i = bis.read(buffer);
+//            while (i != -1) {
+//                stream.write(buffer, 0, i);
+//                i = bis.read(buffer);
+//            }
+
+            // 2.获取输出流
+            stream = new BufferedOutputStream(response.getOutputStream());
+            stream.write(buffer);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            try {
+                if (bis != null) {
+                    bis.close();
+                }
+                if (fis != null) {
+                    fis.close();
+                }
+                if (stream != null) {
+                    stream.flush();
+                    stream.close();
+                }
+
+            } catch (IOException e) {
+                bis = null;
+                fis = null;
+                stream = null;
+            }
+        }
+    }
+
 }

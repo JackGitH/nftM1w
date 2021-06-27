@@ -56,5 +56,8 @@ public class AppConfig {
     @Value("${heco.tokenpath}")
     private String tokenpath;
 
+    @Value("${airdrop.filepath}")
+    private String filepath;
+
 
 }

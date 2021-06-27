@@ -51,7 +51,7 @@ public class TransController extends BaseController {
     private static List<String> airDrop = new ArrayList<>(); // 空投地址
 
 
-    @RequestMapping(value = "")
+/*    @RequestMapping(value = "")
     public String onbmanager(Model model) throws IOException {
         return mainHome;
     }
@@ -62,7 +62,7 @@ public class TransController extends BaseController {
     @ResponseBody
     public ResponseEntity<Response> test() throws IOException {
         return success("test success");
-    }
+    }*/
 
 
 

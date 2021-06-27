@@ -296,6 +296,108 @@ public class AirDropService {
     }
 
 
+
+    /**
+     * 空投批量
+     */
+    public void dropmore(Account account) throws IOException, InterruptedException {
+        // setp1 获取数据库chain 信息
+        long chainId = account.getChainid();
+        String fromaddress = account.getPub();
+        Account load = accountMapper.load(AccountEnum.status0.getStatus(), fromaddress);
+        log.info("##step1 检查账户存在表里");
+        if (load == null) {
+            log.error("##该私钥账户不存在，无法空投，请重新导入小号私钥");
+            throw new RequestException("##该私钥账户不存在，无法空投，请重新导入小号私钥");
+        }
+
+
+        Chain chain = chainMapper.load(AccountEnum.status0.getStatus(), chainId);
+        log.info("##step2 get chain:{}",chain);
+
+
+        Web3j web3j = Web3j.build(new HttpService(chain.getUrl()));
+        Map<String,String> map = new HashMap<>();
+
+        log.info("##step3 去除无效交易 ");
+        for(String toaddressAndCount:account.getToaddressList()) {
+            boolean b = toaddressAndCount.contains(",");
+            if (!b) {
+                log.info("##无效地址 not contains ,");
+                continue;
+            }
+            String[] split = toaddressAndCount.split(",");
+            if (split.length == 1) {
+                log.info("##无效地址 length==1");
+                continue;
+            }
+            String toaddress = split[0];
+            String amount = split[1];
+            if (Double.valueOf(amount) <= 0) {
+                log.info("##无效数量 amount<=0");
+                continue;
+            }
+            map.put(toaddress,amount);
+        }
+
+        log.info("##step4 计算余额是否充足 ");
+        if(map.size()>=500){
+            log.info("##每次最多一次性空投500个地址");
+            throw new RequestException("每次最多一次性空投500个地址");
+        }
+        log.info("##此批空投有效数量是:{}",map.size());
+        //step6 扣除手续费  token转账要和收取手续费岔开时间
+        String onceRate = chain.getRate(); // 单次手续费
+        String totalRate = String.valueOf(Double.valueOf(onceRate) * (map.size())); // 总计手续费
+        String ethBalance = ethereumInfoService.getEthBalance(web3j, account.getPub());
+        if(1.5 * Double.valueOf(totalRate) >Double.valueOf(ethBalance)){// 判断费用是否足够
+            log.info("##当前余额不足以空投"+map.size()+"个有效地址，请充值后再试");
+            throw new RequestException("当前余额不足以空投"+map.size()+"个有效地址，请充值后再试");
+        }
+
+        log.info("##step5 charge free：{}",totalRate);
+        Credentials credentials = Credentials.create(load.getPk());
+        charge(web3j, credentials, chain.getRecipientaddress(), totalRate, chainId, chain.getPriceurl());
+        Thread.sleep(6000);
+
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            String toaddress = entry.getKey();
+            String amount = entry.getValue();
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+
+            log.info("##contractname:{} toaddress:{} amount:{}",account.getContractname(),toaddress,amount);
+
+
+            String contractaddress = account.getContractaddress();
+            String contractname = account.getContractname();
+            Integer decimal = account.getDecimal();
+
+            // step4 进行交易
+            String hash = transService.tokenDeal(web3j, fromaddress, toaddress, contractaddress, amount, load.getPk(), decimal);
+            log.info("##step6 发起交易 hash:{}", hash);
+
+            DropOne.DropOneBuilder builder = DropOne.builder();
+            DropOne dropOne = builder.fromaddress(fromaddress)
+                    .toaddress(toaddress)
+                    .amount(amount)
+                    .datetime(DateUtil.format(new Date(), "yyyy-MM-dd hh:mm:ss"))
+                    .chainid(chainId)
+                    .contractname(contractname)
+                    .contractaddress(contractaddress)
+                    .txstatus(StatusEnum.status1.getStatus())
+                    .createtime(DateUtil.format(new Date(), "yyyy-MM-dd hh:mm:ss"))
+                    .txhash(hash)
+                    .build();
+
+            // step5 保存交易记录
+            log.info("##step7 drop success one and add table:{}", dropOne);
+            dropMapper.add(dropOne);
+        }
+    }
+
+
     /**
      * 刷新空投列表
      */
@@ -344,7 +446,7 @@ public class AirDropService {
         List<DropOne> listPending = dropMapper.list(StatusEnum.status1.getStatus(), null, from, contractaddress);
         List<DropOne> listFail = dropMapper.list(StatusEnum.status3.getStatus(), null, from, contractaddress);
 
-        String result = "当前账号总计空投:" + listAll.size() + "条;pending(正在交易):" + listPending.size() + "条;success(成功):" + listSuccess.size() + "条;faild(失败):" + listFail.size() + "条。";
+        String result = "当前账号总计空投:" + listAll.size() + "条;正在交易:" + listPending.size() + "条;成功:" + listSuccess.size() + "条;失败:" + listFail.size() + "条。";
         return result;
     }
 

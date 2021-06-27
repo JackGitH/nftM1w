@@ -44,7 +44,7 @@ public class AirDrop {
 
     @Scheduled(cron = "0 */1 * * * ?") // 每一分钟空投一次
     public void shareToken() throws InterruptedException {
-        log.info("#before do share flag:{}", flagedrop);
+        /*log.info("#before do share flag:{}", flagedrop);*/
         if (flagedrop) {
             log.info("##do share");
             String contractAddr = config.getContractAddress();
