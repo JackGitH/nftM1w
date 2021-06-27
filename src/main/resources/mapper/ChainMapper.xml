@@ -5,11 +5,11 @@
 
 
     <sql id="selectColumns">
-        id,url,apikey,status,rate,tokenname,modtime,createtime
+        id,url,apikey,status,rate,tokenname,modtime,createtime,priceurl,recipientaddress,chainname
     </sql>
 
     <sql id="insertColumns">
-        id,url,apikey,status,rate,tokenname,createtime
+        id,url,apikey,status,rate,tokenname,createtime,priceurl,recipientaddress,chainname
     </sql>
 
 
@@ -21,9 +21,6 @@
         <where>
             <if test='status != 0'>
                 status= #{status}
-            </if>
-            <if test='id != null'>
-               and id= #{id}
             </if>
         </where>
     </select>
@@ -48,7 +45,7 @@
         <include refid="insertColumns"/>
         )
         VALUES
-        (#{id},#{url},#{apikey},#{status},#{rate},#{tokenname},#{createtime})
+        (#{id},#{url},#{apikey},#{status},#{rate},#{tokenname},#{createtime},#{priceurl},#{recipientaddress},#{chainname})
     </insert>
 
     <delete id="delete">
@@ -56,13 +53,18 @@
     </delete>
 
     <update id="update" parameterType="Chain">
-        update chain set
+        update chain
+        <set>
         <if test='url != null and url != ""'>url=#{url},</if>
         <if test='apikey != null and apikey != ""'>apikey=#{apikey},</if>
         <if test='status != null'>status=#{status},</if>
         <if test='rate != null and rate != ""'>rate=#{rate},</if>
         <if test='tokenname != null and tokenname != ""'>tokenname=#{tokenname},</if>
+        <if test='priceurl != null and priceurl != ""'>priceurl=#{priceurl},</if>
+        <if test='chainname != null and chainname != ""'>chainname=#{chainname},</if>
+        <if test='recipientaddress != null and recipientaddress != ""'>recipientaddress=#{recipientaddress},</if>
         <if test='createtime != null'>createtime=#{createtime}</if>
+        </set>
         WHERE id =#{id}
     </update>
 

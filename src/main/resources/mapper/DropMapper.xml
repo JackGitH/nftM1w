@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.chinaso.mcpac.mapper.EnterpriseMapper">
+<mapper namespace="com.cxnb.mapper.DropMapper">
 
     <sql id="selectColumns">
-        id,from,to,amount,contractaddress,hash,datetime,status,chainid,contractname,modtime,createtime
+        id,fromaddress,toaddress,amount,contractaddress,txhash,datetime,txstatus,chainid,contractname,modtime,createtime
     </sql>
 
     <sql id="insertColumns">
-        from,to,amount,contractaddress,hash,datetime,status,chainid,contractname,createtime
+        fromaddress,toaddress,amount,contractaddress,txhash,datetime,txstatus,chainid,contractname,createtime
     </sql>
 
 
@@ -16,60 +16,62 @@
     <select id="list" resultType="DropOne">
         SELECT
         <include refid="selectColumns"/>
-        from drop
+        from airdrop
         <where>
-            <if test='status != 0'>
-                status= #{status}
+            <if test='txstatus != 0'>
+                txstatus= #{txstatus}
             </if>
             <if test='chainid != null'>
-               and chainid= #{chainid}
+                and chainid= #{chainid}
             </if>
-            <if test='from != null and from != ""'>
-               and from= #{from}
+            <if test='fromaddress != null and fromaddress != ""'>
+                and fromaddress= #{fromaddress}
             </if>
             <if test='contractaddress != null and contractaddress != ""'>
                 and contractaddress=#{contractaddress}
             </if>
         </where>
-        order by createtime asc
+        order by createtime desc
     </select>
 
     <select id="load" resultType="DropOne">
         SELECT
         <include refid="selectColumns"/>
-        from drop where id=#{pk}
+        from airdrop where id=#{pk}
         <where>
-            <if test='status != 0'>
-               and status= #{status}
+            <if test='txstatus != 0'>
+                and txstatus= #{txstatus}
             </if>
         </where>
     </select>
 
     <insert id="add" parameterType="DropOne">
-        INSERT INTO drop
+        INSERT INTO airdrop
         (
         <include refid="insertColumns"/>
         )
         VALUES
-        (#{from},#{to},#{amount},#{contractaddress},#{hash},#{datetime},#{status},#{chainid},#{contractname},#{createtime})
+        (#{fromaddress},#{toaddress},#{amount},#{contractaddress},#{txhash},#{datetime},#{txstatus},#{chainid},#{contractname},#{createtime})
     </insert>
 
     <delete id="delete">
-        delete from drop where id = #{id}
+        delete from airdrop where id = #{id}
     </delete>
 
     <update id="update" parameterType="DropOne">
-        update drop set
-        <if test='from != null and from != ""'>from=#{from},</if>
-        <if test='to != null and to != ""'>to=#{to},</if>
-        <if test='amount != null and amount != ""'>amount=#{amount},</if>
-        <if test='contractaddress != null and contractaddress != ""'>contractaddress=#{contractaddress},</if>
-        <if test='hash != null and hash != ""'>hash=#{hash},</if>
-        <if test='datetime != null'>datetime=#{datetime},</if>
-        <if test='status != null'>status=#{status},</if>
-        <if test='chainid != null and chainid != ""'>chainid=#{chainid},</if>
-        <if test='contractname != null and contractname != ""'>to=#{contractname},</if>
-        <if test='createtime != null'>createtime=#{createtime}</if>
+        update airdrop
+        <set>
+            <if test='fromaddress != null and fromaddress != ""'>fromaddress=#{fromaddress},</if>
+            <if test='toaddress != null and toaddress != ""'>toaddress=#{toaddress},</if>
+            <if test='amount != null and amount != ""'>amount=#{amount},</if>
+            <if test='contractaddress != null and contractaddress != ""'>contractaddress=#{contractaddress},</if>
+            <if test='txhash != null and txhash != ""'>txhash=#{txhash},</if>
+            <if test='datetime != null'>datetime=#{datetime},</if>
+            <if test='txstatus != null'>txstatus=#{txstatus},</if>
+            <if test='chainid != null and chainid != ""'>chainid=#{chainid},</if>
+            <if test='contractname != null and contractname != ""'>contractname=#{contractname},</if>
+            <if test='createtime != null'>createtime=#{createtime}</if>
+        </set>
         WHERE id =#{id}
     </update>
 

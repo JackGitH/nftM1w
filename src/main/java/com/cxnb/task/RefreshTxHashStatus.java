@@ -8,6 +8,8 @@ import com.cxnb.mapper.ChainMapper;
 import com.cxnb.mapper.DropMapper;
 import com.cxnb.service.EthereumInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
+@Configuration
+@EnableScheduling
 public class RefreshTxHashStatus {
 
 
@@ -42,30 +46,40 @@ public class RefreshTxHashStatus {
         List<Chain> chians = chainMapper.list(AccountEnum.status0.getStatus());
         for (Chain chain : chians) {
 
-            List<DropOne> dropOneList1 = dropMapper.list(StatusEnum.status1.getStatus(), chain.getId(), null, null);
+            List<DropOne> dropOneList1 = dropMapper.list(StatusEnum.status1.getStatus(), chain.getId(), "", "");
 
             log.info("chain:{} pending size:{}", chain.getTokenname(), dropOneList1.size());
             Web3j web3j = Web3j.build(new HttpService(chain.getUrl()));
             for (DropOne dropOne : dropOneList1) {
-                String status = ethereumInfoService.getEthTransactionReceipt(web3j, dropOne.getHash()).getStatus();
+                String status = ethereumInfoService.getEthTransactionReceipt(web3j, dropOne.getTxhash()).getStatus();
+                if(status == null){
+                    DropOne updateS = DropOne.builder()
+                            .txstatus(StatusEnum.status3.getStatus())
+                            .id(dropOne.getId())
+                            .build();
+                    dropMapper.update(updateS);
+                    continue;
+                }
                 switch (status) {
 
                     case "0x0":
                         DropOne updateF = DropOne.builder()
-                                .status(StatusEnum.status3.getStatus())
+                                .txstatus(StatusEnum.status3.getStatus())
+                                .id(dropOne.getId())
                                 .build();
                         dropMapper.update(updateF);
                         break;
 
                     case "0x1":
                         DropOne updateS = DropOne.builder()
-                                .status(StatusEnum.status2.getStatus())
+                                .txstatus(StatusEnum.status2.getStatus())
+                                .id(dropOne.getId())
                                 .build();
                         dropMapper.update(updateS);
                         break;
 
                     default:
-                        log.info("## hahs:{} is pending", dropOne.getHash());
+                        log.info("## hahs:{} is pending", dropOne.getTxhash());
 
                 }
             }

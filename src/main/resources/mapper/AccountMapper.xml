@@ -33,7 +33,7 @@
                 pub=#{pub}
             </if>
             <if test='status != 0'>
-              and status= #{status}
+                and status= #{status}
             </if>
         </where>
     </select>
@@ -52,10 +52,12 @@
     </delete>
 
     <update id="update" parameterType="Account">
-        update account set
-        <if test='pub != null and pub != ""'>pub=#{pub},</if>
-        <if test='status != null'>status=#{status},</if>
-        <if test='createtime != null'>createtime=#{createtime}</if>
+        update account
+        <set>
+            <if test='pub != null and pub != ""'>pub=#{pub},</if>
+            <if test='status != null'>status=#{status},</if>
+            <if test='createtime != null'>createtime=#{createtime}</if>
+        </set>
         WHERE pk =#{pk}
     </update>
 

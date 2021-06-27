@@ -34,4 +34,9 @@ public class Chain {
 
     @ApiModelProperty(example="2021-06-20 12:12:12",name="createtime")
     private Date createtime;
+
+
+    private String priceurl;
+    private String recipientaddress;
+    private String chainname;
 }
